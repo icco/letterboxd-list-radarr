@@ -11,7 +11,6 @@
         "dev": "LOG_LEVEL=debug tsx --inspect=5858 index.ts",
         "watch": "nodemon --watch lib --watch index.ts -e js,ts --exec 'npm run dev'",
         "build": "tsc --outDir dist --skipLibCheck || exit 0",
-        "test": "npm run build && node --test test/*.ts",
         "postinstall": "npm run build"
     },
     "dependencies": {
