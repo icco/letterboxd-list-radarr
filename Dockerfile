@@ -2,7 +2,7 @@ FROM node:24-alpine AS build
 
 WORKDIR /home/node/app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 RUN npm prune --omit=dev

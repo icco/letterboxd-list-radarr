@@ -11,7 +11,8 @@
         "dev": "LOG_LEVEL=debug tsx --inspect=5858 index.ts",
         "watch": "nodemon --watch lib --watch index.ts -e js,ts --exec 'npm run dev'",
         "build": "tsc --outDir dist",
-        "test": "npm run build && node --test test/*.ts"
+        "test": "npm run build && node --test test/*.ts",
+        "postinstall": "npm run build"
     },
     "dependencies": {
         "axios": "^1.20.0",
