@@ -28,7 +28,7 @@ test("latest Redis connects explicitly and preserves JSON, expiry, deletion and 
     await store.del("migration:movie");
 });
 
-test("latest scraper keeps poster attributes and movie text intact", () => {
+test("scraper keeps poster attributes and movie text intact", () => {
     const { executeKanpai, KanpaiContext } = require("kanpai-scraper");
     const context = new KanpaiContext('<h1 class="headline-1">Ada Lovelace</h1><div class="posteritem"><div class="react-component" data-target-link="/film/ada/" data-item-name="Ada Lovelace"></div></div>');
     assert.deepEqual(executeKanpai(context, {
