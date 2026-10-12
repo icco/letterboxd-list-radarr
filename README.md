@@ -86,11 +86,9 @@ heroku redis:maxmemory <name-of-redis-instance> --policy allkeys-lfu
 
 #### Pre-built docker-image
 
-GitHub Actions publishes `ghcr.io/screeny05/letterboxd-list-radarr` for x86-64 and arm64 on pushes to `main` or `master`. Tags include the branch name and `sha-<full commit SHA>`; `latest` follows the repository's default branch. Use an image digest when you need an immutable reference.
+Pull `ghcr.io/screeny05/letterboxd-list-radarr:latest` for x86-64 or arm64. GitHub Actions publishes on pushes to `main` and `master`, with `latest` following the default branch and `sha-<full commit SHA>` tags for each build.
 
-Once visibility is public, pull `ghcr.io/screeny05/letterboxd-list-radarr:latest` without registry credentials. Pull requests build and exercise the production image with Redis on both architectures without publishing. These checks validate the emitted runtime artifact; they do not replace TypeScript compilation checks while the existing build script suppresses compiler errors.
-
-The Docker Hub image remains available as `screeny05/letterboxd-list-radarr:latest` for x86-64 and arm64; its publication is separate from the GHCR workflow.
+The Docker Hub image is also available as `screeny05/letterboxd-list-radarr:latest`.
 
 Here is an example of how to use the image with docker-compose:
 
