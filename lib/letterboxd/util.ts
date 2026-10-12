@@ -1,4 +1,4 @@
-import { executeKanpai, KanpaiExecutable, KanpaiContext } from 'kanpai-scraper';
+import { executeKanpai, KanpaiExecutable, KanpaiContext } from 'kanpai-scraper/dist/index.js';
 import get from '../axios';
 
 export const LETTERBOXD_ORIGIN = 'https://letterboxd.com';

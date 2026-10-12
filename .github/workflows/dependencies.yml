@@ -1,0 +1,42 @@
+name: Dependencies
+on:
+  pull_request:
+  push:
+    branches:
+      - chore/latest-dependencies
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd 'redis-cli ping' --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      REDIS_URL: redis://127.0.0.1:6379
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: docker build -t letterboxd-list-radarr:test .
+      - name: Test production image
+        run: |
+          docker run -d --name letterboxd-test --network host -e REDIS_URL -e PORT=5100 letterboxd-list-radarr:test
+          trap 'docker logs letterboxd-test; docker rm -f letterboxd-test' EXIT
+          for attempt in $(seq 1 30); do
+            if docker logs letterboxd-test 2>&1 | grep -q 'Redis ready'; then
+              BASE_URL=http://127.0.0.1:5100 node --test test/http.ts
+              exit
+            fi
+            sleep 1
+          done
+          exit 1
