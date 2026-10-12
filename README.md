@@ -86,7 +86,13 @@ heroku redis:maxmemory <name-of-redis-instance> --policy allkeys-lfu
 
 #### Pre-built docker-image
 
-You will get the newest image by pulling `screeny05/letterboxd-list-radarr:latest`. The image is available for both x86-64 and arm64.
+GitHub Actions publishes `ghcr.io/screeny05/letterboxd-list-radarr` for x86-64 and arm64 on pushes to `main` or `master`. Tags include the branch name and `sha-<full commit SHA>`; `latest` follows the repository's default branch. Use an image digest when you need an immutable reference.
+
+After the first publication, the repository owner must open the container package's settings and change its visibility to **Public** before anonymous pulls will work. New GHCR packages are private by default; workflow permissions do not change package visibility. If the package already exists, also grant this repository Actions write access. See [GitHub's package visibility instructions](https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#configuring-visibility-of-packages-for-your-personal-account) and [Container registry documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+
+Once visibility is public, pull `ghcr.io/screeny05/letterboxd-list-radarr:latest` without registry credentials. Pull requests build and exercise the production image with Redis on both architectures without publishing. These checks validate the emitted runtime artifact; they do not replace TypeScript compilation checks while the existing build script suppresses compiler errors.
+
+The Docker Hub image remains available as `screeny05/letterboxd-list-radarr:latest` for x86-64 and arm64; its publication is separate from the GHCR workflow.
 
 Here is an example of how to use the image with docker-compose:
 
