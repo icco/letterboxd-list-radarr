@@ -2,7 +2,7 @@
 version: "3.8"
 services:
     web:
-        image: node:24-alpine
+        image: node:26-alpine
         ports:
             - 4200:4200
         working_dir: /home/node/app
@@ -12,7 +12,7 @@ services:
             - REDIS_URL=redis://redis:6379
             - PORT=4200
         user: node
-        command: npm run watch
+        command: sh -c "npm install -g pnpm@11.2.2 && pnpm install && pnpm watch"
     redis:
         image: redis:8-alpine
         command: redis-server /usr/local/etc/redis/redis.conf --appendonly yes
