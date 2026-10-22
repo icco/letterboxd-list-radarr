@@ -10,13 +10,27 @@ permissions:
   contents: read
   packages: write
 jobs:
-  publish:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-          ref: 15b6387c433ca05a2e0ab81ad1e92eb49cd36ffe
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
       - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1
         with:
           platforms: arm64
@@ -32,10 +46,9 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=sha-15b6387c433ca05a2e0ab81ad1e92eb49cd36ffe
+            type=sha,format=long
             type=raw,value=latest,enable=${{ github.ref_name == github.event.repository.default_branch }}
           flavor: latest=false
-          labels: org.opencontainers.image.revision=15b6387c433ca05a2e0ab81ad1e92eb49cd36ffe
       - name: Publish amd64 and arm64 image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
@@ -44,4 +57,3 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-contexts: node:18-alpine=docker-image://node:24-alpine
